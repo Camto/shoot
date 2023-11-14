@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 use crate::entity;
+use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::Pew;
 
@@ -23,7 +24,7 @@ impl Default for Guy {
 	}
 }
 
-impl entity::Entity for Guy {
+impl Entity for Guy {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		self.body.x -= 5.0 * tf;
 		

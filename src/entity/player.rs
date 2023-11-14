@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 use crate::window;
 use crate::lerp;
 use crate::entity;
+use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
@@ -12,7 +13,7 @@ pub struct Player {
 	pub body: Circle
 }
 
-impl entity::Entity for Player {
+impl Entity for Player {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		let speed: f32 =
 			if is_key_down(KeyCode::LeftShift) || is_key_down(KeyCode::RightShift) {

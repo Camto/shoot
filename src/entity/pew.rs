@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 use crate::entity;
+use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
@@ -19,7 +20,7 @@ impl Default for Pew {
 	}
 }
 
-impl entity::Entity for Pew {
+impl Entity for Pew {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		self.body.x += self.xv * tf;
 		self.body.y += self.yv * tf;

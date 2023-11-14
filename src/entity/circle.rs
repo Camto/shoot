@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 use crate::window;
-use crate::entity;
+use crate::entity::Entity;
 
 #[derive(Copy, Clone)]
 pub struct Circle {
@@ -8,7 +8,7 @@ pub struct Circle {
 	pub r: f32
 }
 
-impl entity::Entity for Circle {
+impl Entity for Circle {
 	fn get_hitbox(&self) -> Circle {
 		self.clone()
 	}

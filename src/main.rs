@@ -7,6 +7,7 @@ pub mod lerp;
 pub mod entity;
 
 use macroquad::prelude::*;
+use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::entity::player::Player;
 use crate::entity::guy::Guy;
@@ -18,7 +19,7 @@ async fn main() {
 	request_new_screen_size(window::window_width, window::window_height);
 	next_frame().await;
 	
-	let mut entities: Vec<Box<dyn entity::Entity>> = vec![
+	let mut entities: Vec<Box<dyn Entity>> = vec![
 		Box::new(Player {
 			body: Circle {
 				x: 200.0, y: 300.0,
