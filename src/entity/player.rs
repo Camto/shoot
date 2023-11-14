@@ -2,25 +2,17 @@ use macroquad::prelude::*;
 use crate::window;
 use crate::lerp;
 use crate::entity;
-use crate::circle;
+use crate::entity::circle::Circle;
 
 
 pub const player_coll_id: i32 = 1;
 const player_speed: f32 = 300.0;
 
 pub struct Player {
-	pub body: circle::Circle
+	pub body: Circle
 }
 
 impl entity::Entity for Player {
-	fn get_collision_id(&self) -> i32 {
-		player_coll_id
-	}
-	
-	fn get_hitbox(&self) -> circle::Circle {
-		self.body
-	}
-	
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		let speed: f32 =
 			if is_key_down(KeyCode::LeftShift) || is_key_down(KeyCode::RightShift) {
@@ -69,5 +61,13 @@ impl entity::Entity for Player {
 	
 	fn render(&self) {
 		self.body.render()
+	}
+	
+	fn get_collision_id(&self) -> i32 {
+		player_coll_id
+	}
+	
+	fn get_hitbox(&self) -> Circle {
+		self.body
 	}
 }

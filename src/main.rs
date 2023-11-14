@@ -5,9 +5,9 @@
 pub mod window;
 pub mod lerp;
 pub mod entity;
-pub mod circle;
 
 use macroquad::prelude::*;
+use crate::entity::circle::Circle;
 use crate::entity::player::Player;
 use crate::entity::guy::Guy;
 use crate::entity::pew::Pew;
@@ -20,13 +20,13 @@ async fn main() {
 	
 	let mut entities: Vec<Box<dyn entity::Entity>> = vec![
 		Box::new(Player {
-			body: circle::Circle {
+			body: Circle {
 				x: 200.0, y: 300.0,
 				r: 15.0
 			}
 		}),
 		Box::new(Guy {
-			body: circle::Circle {
+			body: Circle {
 				x: window::window_width - 30.0,
 				y: window::window_height - 30.0,
 				r: 30.0
@@ -39,14 +39,16 @@ async fn main() {
 		let tf: f32 = get_frame_time();
 		
 		let mut all_new_entities = vec![];
+		for entity in entities.iter_mut() {
+			let entity::Update_Result { mut new_entities } = entity.update(tf);
+			all_new_entities.append(&mut new_entities);
+		}
+		
 		let mut to_kill = vec![];
-		for (i, entity) in entities.iter_mut().enumerate() {
-			let entity::Update_Result { kill, mut new_entities } = entity.update(tf);
-			
-			if kill {
+		for (i, entity) in entities.iter().enumerate() {
+			if entity.is_dead() {
 				to_kill.push(i);
 			}
-			all_new_entities.append(&mut new_entities);
 		}
 		
 		for (n_removed, i) in to_kill.iter().enumerate() {
@@ -54,6 +56,8 @@ async fn main() {
 		}
 		
 		entities.append(&mut all_new_entities);
+		
+		println!("{}", entities.len());
 		
 		clear_background(RED);
 		
