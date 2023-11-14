@@ -2,11 +2,25 @@ use macroquad::prelude::*;
 
 
 trait Entity {
-	fn update(&mut self, tf: f32) -> Vec<Box<dyn Entity>> {
-		vec![]
+	fn update(&mut self, tf: f32) -> Update_Result {
+		Default::default()
 	}
 	
 	fn render(&self) {}
+}
+
+struct Update_Result {
+	kill: bool,
+	new_entities: Vec<Box<dyn Entity>>
+}
+
+impl Default for Update_Result {
+	fn default() -> Self {
+		Update_Result {
+			kill: false,
+			new_entities: vec![]
+		}
+	}
 }
 
 
@@ -21,6 +35,15 @@ impl Entity for Circle {
 	}
 }
 
+impl Circle {
+	fn off_screen(&self) -> bool {
+		self.x + self.r < -500.0 ||
+			self.y + self.r < -500.0 ||
+			self.x - self.r > 1500.0 ||
+			self.y - self.r > 1100.0
+	}
+}
+
 
 const player_speed: f32 = 300.0;
 
@@ -29,7 +52,7 @@ struct Player {
 }
 
 impl Entity for Player {
-	fn update(&mut self, tf: f32) -> Vec<Box<dyn Entity>> {
+	fn update(&mut self, tf: f32) -> Update_Result {
 		let speed: f32 =
 			if is_key_down(KeyCode::LeftShift) || is_key_down(KeyCode::RightShift) {
 				player_speed * 0.5
@@ -59,7 +82,7 @@ impl Entity for Player {
 			..Default::default()
 		});
 		
-		vec![]
+		Default::default()
 	}
 	
 	fn render(&self) {
@@ -86,31 +109,34 @@ impl Default for Guy {
 }
 
 impl Entity for Guy {
-	fn update(&mut self, tf: f32) -> Vec<Box<dyn Entity>> {
+	fn update(&mut self, tf: f32) -> Update_Result {
 		self.body.x -= 5.0 * tf;
 		
 		self.shoot_timer += tf;
 		if self.shoot_timer >= self.shoot_cycle {
 			self.shoot_timer = 0.0;
 			
-			vec![
-				Box::new(Pew {
-					body: Circle { x: self.body.x, y: self.body.y - 20.0, r: 10.0 },
-					yv: -30.0,
-					..Default::default()
-				}),
-				Box::new(Pew {
-					body: Circle { x: self.body.x, y: self.body.y, r: 10.0 },
-					..Default::default()
-				}),
-				Box::new(Pew {
-					body: Circle { x: self.body.x, y: self.body.y + 20.0, r: 10.0 },
-					yv: 30.0,
-					..Default::default()
-				})
-			]
+			Update_Result {
+				kill: false,
+				new_entities: vec![
+					Box::new(Pew {
+						body: Circle { x: self.body.x, y: self.body.y - 20.0, r: 10.0 },
+						yv: -30.0,
+						..Default::default()
+					}),
+					Box::new(Pew {
+						body: Circle { x: self.body.x, y: self.body.y, r: 10.0 },
+						..Default::default()
+					}),
+					Box::new(Pew {
+						body: Circle { x: self.body.x, y: self.body.y + 20.0, r: 10.0 },
+						yv: 30.0,
+						..Default::default()
+					})
+				]
+			}
 		} else {
-			vec![]
+			Default::default()
 		}
 	}
 	
@@ -135,11 +161,14 @@ impl Default for Pew {
 }
 
 impl Entity for Pew {
-	fn update(&mut self, tf: f32) -> Vec<Box<dyn Entity>> {
+	fn update(&mut self, tf: f32) -> Update_Result {
 		self.body.x += self.xv * tf;
 		self.body.y += self.yv * tf;
 		
-		vec![]
+		Update_Result {
+			kill: self.body.off_screen(),
+			..Default::default()
+		}
 	}
 	
 	fn render(&self) {
@@ -170,15 +199,25 @@ async fn main() {
 		})
 	];
 	
-	let mut bullets: Vec<Box<dyn Entity>> = vec![];
-	
 	loop {
 		let tf: f32 = get_frame_time();
 		
-		let mut new_entities = vec![];
-		for entity in &mut entities {
-			new_entities.append(&mut entity.update(tf));
+		let mut all_new_entities = vec![];
+		let mut to_kill = vec![];
+		for (i, entity) in entities.iter_mut().enumerate() {
+			let Update_Result { kill, mut new_entities } = entity.update(tf);
+			
+			if kill {
+				to_kill.push(i);
+			}
+			all_new_entities.append(&mut new_entities);
 		}
+		
+		for (n_removed, i) in to_kill.iter().enumerate() {
+			entities.remove(i - n_removed);
+		}
+		
+		entities.append(&mut all_new_entities);
 		
 		clear_background(RED);
 		
@@ -188,8 +227,6 @@ async fn main() {
 		for entity in &entities {
 			entity.render();
 		}
-		
-		entities.append(&mut new_entities);
 		
 		draw_text("IT WORKS!", 20.0, 20.0, 30.0, DARKGRAY);
 		
