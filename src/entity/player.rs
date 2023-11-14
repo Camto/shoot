@@ -43,18 +43,18 @@ impl Entity for Player {
 		if self.body.y < self.body.r {
 			self.body.y = self.body.r
 		}
-		if self.body.x > window::window_width - self.body.r {
-			self.body.x = window::window_width - self.body.r
+		if self.body.x > window::width - self.body.r {
+			self.body.x = window::width - self.body.r
 		}
-		if self.body.y > window::window_height - self.body.r {
-			self.body.y = window::window_height - self.body.r
+		if self.body.y > window::height - self.body.r {
+			self.body.y = window::height - self.body.r
 		}
 		
-		let cam_x_off = float_utils::lerp(self.body.x, self.body.r, window::window_width - self.body.r, -50.0, 50.0);
-		let cam_y_off = float_utils::lerp(self.body.y, self.body.r, window::window_height - self.body.r, -50.0, 50.0);
+		let cam_x_off = float_utils::lerp(self.body.x, self.body.r, window::width - self.body.r, -50.0, 50.0);
+		let cam_y_off = float_utils::lerp(self.body.y, self.body.r, window::height - self.body.r, -50.0, 50.0);
 		set_camera(&Camera3D {
-			position: vec3(window::window_width/2.0 - cam_x_off, window::window_height/2.0 - cam_y_off, -500.0),
-			target: vec3(window::window_width/2.0, window::window_height/2.0, 0.0),
+			position: vec3(window::width/2.0 - cam_x_off, window::height/2.0 - cam_y_off, -500.0),
+			target: vec3(window::width/2.0, window::height/2.0, 0.0),
 			up: vec3(0.0, -1.0, 0.0),
 			..Default::default()
 		});

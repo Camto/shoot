@@ -18,17 +18,21 @@ use crate::entity::pew::Pew;
 
 type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
 
+const space_size: f32 = 1024.0;
+
 #[macroquad::main("Shoot")]
 async fn main() {
-	request_new_screen_size(window::window_width, window::window_height);
+	let space: Texture2D = load_texture("images/space.png").await.unwrap();
+	
+	request_new_screen_size(window::width, window::height);
 	next_frame().await;
 	
 	let mut entities: Entities = [
 		vec![
 			Box::new(Guy::new(guy::Guy_Options {
 				body: Circle {
-					x: window::window_width - 30.0,
-					y: window::window_height - 30.0,
+					x: window::width - 30.0,
+					y: window::height - 30.0,
 					r: 30.0
 				},
 				path: vec![
@@ -54,6 +58,13 @@ async fn main() {
 	];
 	
 	loop {
+		set_camera(&Camera3D {
+			position: vec3(window::width/2.0, window::height/2.0, -500.0),
+			target: vec3(window::width/2.0, window::height/2.0, 0.0),
+			up: vec3(0.0, -1.0, 0.0),
+			..Default::default()
+		});
+		
 		let tf: f32 = get_frame_time();
 		
 		let mut all_new_entities: Entities = [vec![], vec![], vec![], vec![]];
@@ -102,18 +113,20 @@ async fn main() {
 			}
 		}
 		
-		for (i, layer) in entities.iter_mut().enumerate() {
-			layer.append(&mut all_new_entities[i]);
-		}
-		
 		//println!("Entities per layer: {} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
 		
 		clear_background(RED);
+		
+		draw_cube(vec3(window::width * 0.5, window::height * 0.5, 50.0), vec3(space_size, space_size, 1.0), Some(&space), WHITE);
 		
 		for layer in &entities {
 			for entity in layer {
 				entity.render();
 			}
+		}
+		
+		for (i, layer) in entities.iter_mut().enumerate() {
+			layer.append(&mut all_new_entities[i]);
 		}
 		
 		next_frame().await

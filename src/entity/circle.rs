@@ -33,8 +33,8 @@ impl Circle {
 	pub fn off_screen(&self) -> bool {
 		self.x < -500.0 - self.r ||
 			self.y < -500.0 - self.r ||
-			self.x > window::window_width + 500.0 + self.r ||
-			self.y > window::window_height + 500.0 + self.r
+			self.x > window::width + 500.0 + self.r ||
+			self.y > window::height + 500.0 + self.r
 	}
 }
 
