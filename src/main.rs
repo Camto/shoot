@@ -30,7 +30,8 @@ async fn main() {
 				body: Circle {
 					x: 200.0, y: 300.0,
 					r: 15.0
-				}
+				},
+				was_killed: false
 			})
 		],
 		vec![],
@@ -56,6 +57,26 @@ async fn main() {
 				for new_entity in new_entities {
 					all_new_entities[new_entity.get_collision_id()].push(new_entity);
 				}
+			}
+		}
+		
+		let mut collisions: [Vec<(usize, usize)>; collision::number_of_layers] = [vec![], vec![], vec![], vec![]];
+		for (layer_id, layer) in entities.iter().enumerate() {
+			for (entity_idx, entity) in layer.iter().enumerate() {
+				for &check_layer in entity.checks_collision_with() {
+					for (other_idx, other) in entities[check_layer].iter().enumerate() {
+						if entity.collides_with(&**other) {
+							collisions[layer_id].push((entity_idx, check_layer));
+							collisions[check_layer].push((other_idx, layer_id));
+						}
+					}
+				}
+			}
+		}
+		
+		for (i, layer) in entities.iter_mut().enumerate() {
+			for &(j, collided_id) in collisions[i].iter() {
+				layer[j].collided_with(collided_id);
 			}
 		}
 		

@@ -10,11 +10,16 @@ pub struct Circle {
 
 impl Entity for Circle {
 	fn get_hitbox(&self) -> Circle {
-		self.clone()
+		*self
 	}
 	
 	fn render(&self) {
 		draw_circle(self.x, self.y, self.r, YELLOW);
+	}
+	
+	fn collides_with(&self, other: &dyn Entity) -> bool {
+		let other_circle = other.get_hitbox();
+		self.dist(&other_circle) < self.r + other_circle.r
 	}
 }
 
@@ -23,10 +28,6 @@ impl Circle {
 		let x_dist = other.x - self.x;
 		let y_dist = other.y - self.y;
 		(x_dist * x_dist + y_dist * y_dist).sqrt()
-	}
-	
-	pub fn does_collide(&self, other: &Self) -> bool {
-		self.dist(other) < self.r + other.r
 	}
 	
 	pub fn off_screen(&self) -> bool {

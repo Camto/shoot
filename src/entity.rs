@@ -3,10 +3,9 @@ pub mod player;
 pub mod guy;
 pub mod pew;
 
+use crate::collision;
 use crate::entity::circle::Circle;
 
-
-pub const no_coll_checks: &'static [usize] = &[];
 
 pub trait Entity {
 	fn update(&mut self, _: f32) -> Update_Result {
@@ -15,16 +14,23 @@ pub trait Entity {
 	
 	fn render(&self) {}
 	
+	#[allow(unused_variables)]
+	fn collided_with(&mut self, collision_id: usize) {}
+	
 	fn is_dead(&self) -> bool { false }
 	
 	fn get_collision_id(&self) -> usize { 0 }
 	
 	fn checks_collision_with(&self) -> &'static [usize] {
-		no_coll_checks
+		collision::no_coll_checks
 	}
 	
 	fn get_hitbox(&self) -> Circle {
 		Default::default()
+	}
+	
+	fn collides_with(&self, other: &dyn Entity) -> bool {
+		self.get_hitbox().collides_with(other)
 	}
 }
 

@@ -1,16 +1,17 @@
 use macroquad::prelude::*;
 use crate::window;
+use crate::collision;
 use crate::lerp;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
-pub const player_coll_id: usize = 1;
 const player_speed: f32 = 300.0;
 
 pub struct Player {
-	pub body: Circle
+	pub body: Circle,
+	pub was_killed: bool
 }
 
 impl Entity for Player {
@@ -64,8 +65,22 @@ impl Entity for Player {
 		self.body.render()
 	}
 	
+	fn collided_with(&mut self, collision_id: usize) {
+		if collision_id == collision::enemy_coll_id {
+			self.was_killed = true;
+		}
+	}
+	
+	fn is_dead(&self) -> bool {
+		self.was_killed
+	}
+	
 	fn get_collision_id(&self) -> usize {
-		player_coll_id
+		collision::player_coll_id
+	}
+	
+	fn checks_collision_with(&self) -> &'static [usize] {
+		collision::collide_with_enemies
 	}
 	
 	fn get_hitbox(&self) -> Circle {
