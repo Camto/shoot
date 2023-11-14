@@ -17,7 +17,6 @@ use crate::entity::pew::Pew;
 
 type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
 
-
 #[macroquad::main("Shoot")]
 async fn main() {
 	request_new_screen_size(window::window_width, window::window_height);

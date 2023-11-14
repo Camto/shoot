@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 use crate::window;
 use crate::entity::Entity;
 
+
 #[derive(Copy, Clone)]
 pub struct Circle {
 	pub x: f32, pub y: f32,
