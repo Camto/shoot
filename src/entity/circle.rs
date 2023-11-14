@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 use crate::window;
+use crate::float_utils;
 use crate::entity::Entity;
 
 
@@ -20,15 +21,13 @@ impl Entity for Circle {
 	
 	fn collides_with(&self, other: &dyn Entity) -> bool {
 		let other_circle = other.get_hitbox();
-		self.dist(&other_circle) < self.r + other_circle.r
+		self.center_dist(&other_circle) < self.r + other_circle.r
 	}
 }
 
 impl Circle {
-	pub fn dist(&self, other: &Self) -> f32 {
-		let x_dist = other.x - self.x;
-		let y_dist = other.y - self.y;
-		(x_dist * x_dist + y_dist * y_dist).sqrt()
+	pub fn center_dist(&self, other: &Self) -> f32 {
+		float_utils::dist(self.x, self.y, other.x, other.y)
 	}
 	
 	pub fn off_screen(&self) -> bool {

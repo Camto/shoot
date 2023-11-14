@@ -4,13 +4,14 @@
 
 pub mod window;
 pub mod collision;
-pub mod lerp;
+pub mod float_utils;
 pub mod entity;
 
 use macroquad::prelude::*;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::entity::player::Player;
+use crate::entity::guy;
 use crate::entity::guy::Guy;
 use crate::entity::pew::Pew;
 
@@ -24,14 +25,20 @@ async fn main() {
 	
 	let mut entities: Entities = [
 		vec![
-			Box::new(Guy {
+			Box::new(Guy::new(guy::Guy_Options {
 				body: Circle {
 					x: window::window_width - 30.0,
 					y: window::window_height - 30.0,
 					r: 30.0
 				},
+				path: vec![
+					(800.0, 100.0),
+					(700.0, 200.0),
+					(800.0, 300.0),
+					(700.0, 400.0)
+				],
 				..Default::default()
-			})
+			}))
 		],
 		vec![
 			Box::new(Player {
@@ -74,7 +81,7 @@ async fn main() {
 				}
 			}
 		}
-		println!("# of collision checks: {num_of_coll_calcs}");
+		//println!("# of collision checks: {num_of_coll_calcs}");
 		
 		for (i, layer) in entities.iter_mut().enumerate() {
 			for &(j, collided_id) in collisions[i].iter() {
@@ -99,7 +106,7 @@ async fn main() {
 			layer.append(&mut all_new_entities[i]);
 		}
 		
-		println!("Entities per layer: {} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
+		//println!("Entities per layer: {} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
 		
 		clear_background(RED);
 		
