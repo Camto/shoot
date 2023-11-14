@@ -59,11 +59,13 @@ async fn main() {
 			}
 		}
 		
+		let mut num_of_coll_calcs = 0;
 		let mut collisions: [Vec<(usize, usize)>; collision::number_of_layers] = [vec![], vec![], vec![], vec![]];
 		for (layer_id, layer) in entities.iter().enumerate() {
 			for (entity_idx, entity) in layer.iter().enumerate() {
 				for &check_layer in entity.checks_collision_with() {
 					for (other_idx, other) in entities[check_layer].iter().enumerate() {
+						num_of_coll_calcs += 1;
 						if entity.collides_with(&**other) {
 							collisions[layer_id].push((entity_idx, check_layer));
 							collisions[check_layer].push((other_idx, layer_id));
@@ -72,6 +74,7 @@ async fn main() {
 				}
 			}
 		}
+		println!("# of collision checks: {num_of_coll_calcs}");
 		
 		for (i, layer) in entities.iter_mut().enumerate() {
 			for &(j, collided_id) in collisions[i].iter() {
@@ -96,7 +99,7 @@ async fn main() {
 			layer.append(&mut all_new_entities[i]);
 		}
 		
-		println!("{} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
+		println!("Entities per layer: {} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
 		
 		clear_background(RED);
 		
