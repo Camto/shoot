@@ -25,19 +25,19 @@ impl Object for Circle {
 }
 
 
-const protag_speed: f32 = 300.0;
+const player_speed: f32 = 300.0;
 
-struct Protag {
+struct Player {
 	body: Circle
 }
 
-impl Object for Protag {
+impl Object for Player {
 	fn update(&mut self, tf: f32) {
 		let speed: f32 =
 			if is_key_down(KeyCode::LeftShift) || is_key_down(KeyCode::RightShift) {
-				protag_speed * 0.5
+				player_speed * 0.5
 			} else {
-				protag_speed
+				player_speed
 			};
 		
 		if is_key_down(KeyCode::Up) {
@@ -143,19 +143,19 @@ impl Object for Pew {
 }
 
 
-#[macroquad::main("BasicShapes")]
+#[macroquad::main("Shoot")]
 async fn main() {
 	request_new_screen_size(1000.0, 600.0);
 	next_frame().await;
 	
-	let mut protag: Protag = Protag {
+	let mut player: Player = Player {
 		body: Circle {
 			x: 200.0, y: 300.0,
 			r: 15.0
 		}
 	};
 	
-	let mut guiz: Vec<Box<dyn Enemy>> = vec![
+	let mut enemies: Vec<Box<dyn Enemy>> = vec![
 		Box::new(Guy {
 			body: Circle {
 				x: 1000.0 - 30.0,
@@ -166,14 +166,13 @@ async fn main() {
 		})
 	];
 	
-	let mut boulets: Vec<Box<dyn Object>> = vec![];
+	let mut bullets: Vec<Box<dyn Object>> = vec![];
 	
 	loop {
 		clear_background(RED);
 		
-		let cam_x_off = lerp(protag.body.x, 0.0, 1000.0, -50.0, 50.0);
-		let cam_y_off = lerp(protag.body.y, 0.0, 600.0, -50.0, 50.0);
-		println!("{cam_x_off} {cam_y_off}");
+		let cam_x_off = lerp(player.body.x, 0.0, 1000.0, -50.0, 50.0);
+		let cam_y_off = lerp(player.body.y, 0.0, 600.0, -50.0, 50.0);
 		set_camera(&Camera3D {
 			position: vec3(500.0 + cam_x_off, 300.0 + cam_y_off, -600.0),
 			target: vec3(500.0, 300.0, 0.0),
@@ -186,18 +185,18 @@ async fn main() {
 		
 		let tf: f32 = get_frame_time();
 		
-		protag.update(tf);
-		protag.render();
+		player.update(tf);
+		player.render();
 		
-		for gui in guiz.iter_mut() {
-			gui.update(tf);
-			boulets.append(&mut gui.shoot(tf));
-			gui.render();
+		for enemy in enemies.iter_mut() {
+			enemy.update(tf);
+			bullets.append(&mut enemy.shoot(tf));
+			enemy.render();
 		}
 		
-		for bul in boulets.iter_mut() {
-			bul.update(tf);
-			bul.render();
+		for bullet in bullets.iter_mut() {
+			bullet.update(tf);
+			bullet.render();
 		}
 		
 		draw_text("IT WORKS!", 20.0, 20.0, 30.0, DARKGRAY);
