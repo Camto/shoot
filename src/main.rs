@@ -89,7 +89,7 @@ impl Entity for Player {
 		let cam_x_off = lerp(self.body.x, 0.0, 1000.0, -50.0, 50.0);
 		let cam_y_off = lerp(self.body.y, 0.0, 600.0, -50.0, 50.0);
 		set_camera(&Camera3D {
-			position: vec3(500.0 + cam_x_off, 300.0 + cam_y_off, -600.0),
+			position: vec3(500.0 - cam_x_off, 300.0 - cam_y_off, -600.0),
 			target: vec3(500.0, 300.0, 0.0),
 			up: vec3(0.0, -1.0, 0.0),
 			..Default::default()
