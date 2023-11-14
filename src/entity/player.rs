@@ -6,7 +6,7 @@ use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
-pub const player_coll_id: i32 = 1;
+pub const player_coll_id: usize = 1;
 const player_speed: f32 = 300.0;
 
 pub struct Player {
@@ -64,7 +64,7 @@ impl Entity for Player {
 		self.body.render()
 	}
 	
-	fn get_collision_id(&self) -> i32 {
+	fn get_collision_id(&self) -> usize {
 		player_coll_id
 	}
 	

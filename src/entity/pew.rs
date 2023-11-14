@@ -4,7 +4,7 @@ use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
-pub const pew_coll_id: i32 = 3;
+pub const pew_coll_id: usize = 3;
 
 pub struct Pew {
 	pub body: Circle,
@@ -38,7 +38,7 @@ impl Entity for Pew {
 		self.body.off_screen()
 	}
 	
-	fn get_collision_id(&self) -> i32 {
+	fn get_collision_id(&self) -> usize {
 		pew_coll_id
 	}
 	

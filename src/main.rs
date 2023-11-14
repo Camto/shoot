@@ -3,6 +3,7 @@
 
 
 pub mod window;
+pub mod collision;
 pub mod lerp;
 pub mod entity;
 
@@ -14,56 +15,75 @@ use crate::entity::guy::Guy;
 use crate::entity::pew::Pew;
 
 
+type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
+
+
 #[macroquad::main("Shoot")]
 async fn main() {
 	request_new_screen_size(window::window_width, window::window_height);
 	next_frame().await;
 	
-	let mut entities: Vec<Box<dyn Entity>> = vec![
-		Box::new(Player {
-			body: Circle {
-				x: 200.0, y: 300.0,
-				r: 15.0
-			}
-		}),
-		Box::new(Guy {
-			body: Circle {
-				x: window::window_width - 30.0,
-				y: window::window_height - 30.0,
-				r: 30.0
-			},
-			..Default::default()
-		})
+	let mut entities: Entities = [
+		vec![],
+		vec![
+			Box::new(Player {
+				body: Circle {
+					x: 200.0, y: 300.0,
+					r: 15.0
+				}
+			})
+		],
+		vec![],
+		vec![
+			Box::new(Guy {
+				body: Circle {
+					x: window::window_width - 30.0,
+					y: window::window_height - 30.0,
+					r: 30.0
+				},
+				..Default::default()
+			})
+		]
 	];
 	
 	loop {
 		let tf: f32 = get_frame_time();
 		
-		let mut all_new_entities = vec![];
-		for entity in entities.iter_mut() {
-			let entity::Update_Result { mut new_entities } = entity.update(tf);
-			all_new_entities.append(&mut new_entities);
-		}
-		
-		let mut to_kill = vec![];
-		for (i, entity) in entities.iter().enumerate() {
-			if entity.is_dead() {
-				to_kill.push(i);
+		let mut all_new_entities: Entities = [vec![], vec![], vec![], vec![]];
+		for layer in entities.iter_mut() {
+			for entity in layer.iter_mut() {
+				let entity::Update_Result { new_entities } = entity.update(tf);
+				for new_entity in new_entities {
+					all_new_entities[new_entity.get_collision_id()].push(new_entity);
+				}
 			}
 		}
 		
-		for (n_removed, i) in to_kill.iter().enumerate() {
-			entities.remove(i - n_removed);
+		for layer in entities.iter_mut() {
+			let mut to_kill = vec![];
+			for (i, entity) in layer.iter().enumerate() {
+				if entity.is_dead() {
+					to_kill.push(i);
+				}
+			}
+			
+			for (n_removed, i) in to_kill.iter().enumerate() {
+				layer.remove(i - n_removed);
+			}
 		}
 		
-		entities.append(&mut all_new_entities);
+		for (i, layer) in entities.iter_mut().enumerate() {
+			layer.append(&mut all_new_entities[i]);
+		}
 		
-		println!("{}", entities.len());
+		println!("{} {} {} {}", entities[0].len(), entities[1].len(), entities[2].len(), entities[3].len());
 		
 		clear_background(RED);
 		
-		for entity in &entities {
-			entity.render();
+		for layer in &entities {
+			for entity in layer {
+				entity.render();
+			}
 		}
 		
 		next_frame().await

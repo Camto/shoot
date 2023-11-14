@@ -6,6 +6,8 @@ pub mod pew;
 use crate::entity::circle::Circle;
 
 
+pub const no_coll_checks: &'static [usize] = &[];
+
 pub trait Entity {
 	fn update(&mut self, _: f32) -> Update_Result {
 		Default::default()
@@ -15,7 +17,11 @@ pub trait Entity {
 	
 	fn is_dead(&self) -> bool { false }
 	
-	fn get_collision_id(&self) -> i32 { 0 }
+	fn get_collision_id(&self) -> usize { 0 }
+	
+	fn checks_collision_with(&self) -> &'static [usize] {
+		no_coll_checks
+	}
 	
 	fn get_hitbox(&self) -> Circle {
 		Default::default()
