@@ -37,10 +37,10 @@ impl Entity for Circle {
 
 impl Circle {
 	fn off_screen(&self) -> bool {
-		self.x + self.r < -500.0 ||
-			self.y + self.r < -500.0 ||
-			self.x - self.r > 1500.0 ||
-			self.y - self.r > 1100.0
+		self.x < -500.0 - self.r ||
+			self.y < -500.0 - self.r ||
+			self.x > 1500.0 + self.r ||
+			self.y > 1100.0 + self.r
 	}
 }
 
@@ -71,6 +71,19 @@ impl Entity for Player {
 		}
 		if is_key_down(KeyCode::Right) {
 			self.body.x += speed * tf;
+		}
+		
+		if self.body.x < -100.0 - self.body.r {
+			self.body.x = -100.0 - self.body.r
+		}
+		if self.body.y < -50.0 - self.body.r {
+			self.body.y = -50.0 - self.body.r
+		}
+		if self.body.x > 1100.0 + self.body.r {
+			self.body.x = 1100.0 + self.body.r
+		}
+		if self.body.y > 650.0 + self.body.r {
+			self.body.y = 650.0 + self.body.r
 		}
 		
 		let cam_x_off = lerp(self.body.x, 0.0, 1000.0, -50.0, 50.0);
