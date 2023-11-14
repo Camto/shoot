@@ -1,11 +1,10 @@
 use macroquad::prelude::*;
+use crate::collision;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::Pew;
 
-
-pub const guy_coll_id: usize = 3;
 
 pub struct Guy {
 	pub body: Circle,
@@ -60,7 +59,7 @@ impl Entity for Guy {
 	}
 	
 	fn get_collision_id(&self) -> usize {
-		guy_coll_id
+		collision::generic_coll_id
 	}
 	
 	fn get_hitbox(&self) -> Circle {

@@ -24,7 +24,16 @@ async fn main() {
 	next_frame().await;
 	
 	let mut entities: Entities = [
-		vec![],
+		vec![
+			Box::new(Guy {
+				body: Circle {
+					x: window::window_width - 30.0,
+					y: window::window_height - 30.0,
+					r: 30.0
+				},
+				..Default::default()
+			})
+		],
 		vec![
 			Box::new(Player {
 				body: Circle {
@@ -35,16 +44,7 @@ async fn main() {
 			})
 		],
 		vec![],
-		vec![
-			Box::new(Guy {
-				body: Circle {
-					x: window::window_width - 30.0,
-					y: window::window_height - 30.0,
-					r: 30.0
-				},
-				..Default::default()
-			})
-		]
+		vec![]
 	];
 	
 	loop {
