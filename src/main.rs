@@ -8,7 +8,7 @@ pub mod float_utils;
 pub mod entity;
 pub mod scene;
 
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 use crate::scene::Scene;
 use crate::scene::start::Start;
 
@@ -29,7 +29,10 @@ async fn main() {
 		texs.push(load_texture(s).await.unwrap());
 	}
 	
-	let sounds: entity::Sounds = vec![];
+	let mut sounds: entity::Sounds = vec![];
+	for s in ["assets/player_shoot.ogg", "assets/enemy_shoot.ogg"] {
+		sounds.push(audio::load_sound(s).await.unwrap());
+	}
 	
 	let kenvector_future: Font = load_ttf_font("assets/kenvector_future.ttf").await.unwrap();
 	

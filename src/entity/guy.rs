@@ -1,4 +1,4 @@
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 use crate::collision;
 use crate::float_utils;
 use crate::entity;
@@ -12,6 +12,8 @@ const hp_max: usize = 8;
 const speed: f32 = 150.0;
 
 const tex_id: usize = 7;
+
+const shoot_sfx_id: usize = 1;
 
 pub struct Guy {
 	pub body: Circle,
@@ -28,7 +30,8 @@ pub struct Guy {
 	starting_y: f32, 
 	
 	pub shoot_cycle: f32,
-	pub shoot_timer: f32
+	pub shoot_timer: f32,
+	shot: bool
 }
 
 pub struct Guy_Options {
@@ -73,7 +76,8 @@ impl Guy {
 			move_timer: 0.0,
 			
 			shoot_cycle: init.shoot_cycle,
-			shoot_timer: init.shoot_timer
+			shoot_timer: init.shoot_timer,
+			shot: false
 		}
 	}
 }
@@ -110,6 +114,7 @@ impl Entity for Guy {
 			self.shoot_timer += tf;
 			if self.shoot_timer >= self.shoot_cycle {
 				self.shoot_timer = 0.0;
+				self.shot = true;
 				
 				entity::Update_Result {
 					new_entities: vec![
@@ -131,6 +136,7 @@ impl Entity for Guy {
 					..Default::default()
 				}
 			} else {
+				self.shot = false;
 				Default::default()
 			}
 		} else {
@@ -151,16 +157,18 @@ impl Entity for Guy {
 		}
 	}
 	
-	fn render(&self, texs: &entity::Textures, _: &entity::Sounds, _: &Font) {
+	fn render(&self, texs: &entity::Textures, sounds: &entity::Sounds, _: &Font) {
 		let tex: &Texture2D = &texs[tex_id];
-		
-		//self.body.render(texs);
-		
 		draw_cube(
 			vec3(self.body.x, self.body.y, 0.0),
 			vec3(tex.width(), tex.height(), 0.0),
 			Some(tex), WHITE
 		);
+		
+		if self.shot {
+			let shoot_sfx: &audio::Sound = &sounds[shoot_sfx_id];
+			audio::play_sound_once(&shoot_sfx);
+		}
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {

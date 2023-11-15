@@ -1,4 +1,4 @@
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 use crate::window;
 use crate::collision;
 use crate::float_utils;
@@ -18,10 +18,13 @@ const shoot_cycle: f32 = 0.5;
 const tex_id: usize = 1;
 const dmg_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
 
+const shoot_sfx_id: usize = 0;
+
 pub struct Player {
 	pub body: Circle,
 	hp: usize,
-	shoot_timer: f32
+	shoot_timer: f32,
+	shot: bool
 }
 
 pub struct Player_Options {
@@ -33,7 +36,8 @@ impl Player {
 		Player {
 			body: init.body,
 			hp: hp_max,
-			shoot_timer: 0.0
+			shoot_timer: 0.0,
+			shot: false
 		}
 	}
 }
@@ -93,6 +97,7 @@ impl Entity for Player {
 		self.shoot_timer += tf;
 		if self.shoot_timer >= shoot_cycle {
 			self.shoot_timer = 0.0;
+			self.shot = true;
 			
 			entity::Update_Result {
 				new_entities: vec![
@@ -106,15 +111,13 @@ impl Entity for Player {
 				..Default::default()
 			}
 		} else {
+			self.shot = false;
 			Default::default()
 		}
 	}
 	
-	fn render(&self, texs: &entity::Textures, _: &entity::Sounds, _: &Font) {
+	fn render(&self, texs: &entity::Textures, sounds: &entity::Sounds, _: &Font) {
 		let tex: &Texture2D = &texs[tex_id];
-		
-		//self.body.render(texs);
-		
 		draw_cube(
 			vec3(self.body.x, self.body.y, 0.0),
 			vec3(tex.width(), tex.height(), 0.0),
@@ -128,6 +131,11 @@ impl Entity for Player {
 				vec3(dmg_tex.width(), dmg_tex.height(), 0.0),
 				Some(dmg_tex), WHITE
 			);
+		}
+		
+		if self.shot {
+			let shoot_sfx: &audio::Sound = &sounds[shoot_sfx_id];
+			audio::play_sound_once(&shoot_sfx);
 		}
 	}
 	
