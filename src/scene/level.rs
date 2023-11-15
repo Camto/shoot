@@ -5,6 +5,7 @@ use crate::entity::player;
 use crate::entity::player::Player;
 use crate::entity::guy;
 use crate::entity::guy::Guy;
+use crate::entity::win_checker::Win_Checker;
 use crate::scene;
 use crate::scene::Scene;
 use crate::scene::background;
@@ -17,7 +18,9 @@ pub struct Level {}
 impl Scene for Level {
 	fn init(&self, texs: &entity::Textures) -> scene::Entities {
 		let mut entities: scene::Entities = [
-			vec![],
+			vec![
+				Box::new(Win_Checker::new())
+			],
 			vec![
 				Box::new(Player::new(player::Player_Options {
 					body: Circle {

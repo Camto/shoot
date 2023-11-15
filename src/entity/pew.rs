@@ -85,9 +85,13 @@ impl Entity for Pew {
 		);
 	}
 	
-	// Killed if it collides with anything that was checking for it.
-	fn collided_with(&mut self, _: usize) {
-		self.was_killed = true;
+	fn collided_with(&mut self, collision_id: usize) {
+		if
+			self.is_friendly && collision_id == collision::enemy_id ||
+			!self.is_friendly && collision_id == collision::player_id
+		{
+			self.was_killed = true;
+		}
 	}
 	
 	fn is_dead(&self) -> bool {

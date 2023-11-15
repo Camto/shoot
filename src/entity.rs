@@ -3,6 +3,7 @@ pub mod background;
 pub mod player;
 pub mod guy;
 pub mod pew;
+pub mod win_checker;
 
 use macroquad::prelude::*;
 use crate::collision;

@@ -1,7 +1,7 @@
 pub mod background;
 //pub mod intro;
 pub mod level;
-//pub mod win;
+pub mod win;
 pub mod lose;
 
 use crate::collision;
