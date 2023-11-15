@@ -9,7 +9,7 @@ pub struct Lose {}
 impl Scene for Lose {
 	fn init(&self, texs: &entity::Textures) -> scene::Entities {
 		let mut entities = (scene::Empty_Scene {}).init(&texs);
-		background::add(&mut entities, texs);
+		background::add(&mut entities, 0.0, texs);
 		entities
 	}
 }

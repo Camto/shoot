@@ -10,6 +10,8 @@ use crate::scene::Scene;
 use crate::scene::background;
 
 
+const scroll_speed: f32 = 150.0;
+
 pub struct Level {}
 
 impl Scene for Level {
@@ -42,7 +44,7 @@ impl Scene for Level {
 			vec![],
 			vec![]
 		];
-		background::add(&mut entities, &texs);
+		background::add(&mut entities, scroll_speed, &texs);
 		entities
 	}
 }
