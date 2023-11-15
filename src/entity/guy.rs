@@ -127,7 +127,8 @@ impl Entity for Guy {
 							yv: 40.0,
 							..Default::default()
 						}))
-					]
+					],
+					..Default::default()
 				}
 			} else {
 				Default::default()

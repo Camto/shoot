@@ -6,20 +6,12 @@ pub mod window;
 pub mod collision;
 pub mod float_utils;
 pub mod entity;
+pub mod scene;
 
 use macroquad::prelude::*;
-use crate::entity::Entity;
-use crate::entity::circle::Circle;
-use crate::entity::background::Background;
-use crate::entity::player;
-use crate::entity::player::Player;
-use crate::entity::guy;
-use crate::entity::guy::Guy;
+use crate::scene::Scene;
+use crate::scene::level::Level;
 
-
-type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
-
-const scroll_speed: f32 = 150.0;
 
 #[macroquad::main("Shoot")]
 async fn main() {
@@ -40,38 +32,7 @@ async fn main() {
 	request_new_screen_size(window::width, window::height);
 	next_frame().await;
 	
-	let mut entities: Entities = [
-		vec![
-			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: -texs[0].width(), scroll_speed }),
-			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 0.0, scroll_speed }),
-			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: texs[0].width(), scroll_speed }),
-			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 2.0 * texs[0].width(), scroll_speed }),
-			Box::new(Guy::new(guy::Guy_Options {
-				body: Circle {
-					x: window::width - 30.0,
-					y: window::height - 30.0,
-					r: 30.0
-				},
-				path: vec![
-					(800.0, 100.0),
-					(700.0, 200.0),
-					(800.0, 300.0),
-					(700.0, 400.0)
-				],
-				..Default::default()
-			}))
-		],
-		vec![
-			Box::new(Player::new(player::Player_Options {
-				body: Circle {
-					x: 200.0, y: 300.0,
-					r: 30.0
-				}
-			}))
-		],
-		vec![],
-		vec![]
-	];
+	let mut entities: scene::Entities = (Level {}).init(&texs);
 	
 	loop {
 		set_camera(&Camera3D {
@@ -83,12 +44,18 @@ async fn main() {
 		
 		let tf: f32 = get_frame_time();
 		
-		let mut all_new_entities: Entities = [vec![], vec![], vec![], vec![]];
+		let mut all_new_entities: scene::Entities = (scene::Empty_Scene {}).init(&texs);
+		let mut new_scene: Option<Box<dyn Scene>> = None;
 		for layer in entities.iter_mut() {
 			for entity in layer.iter_mut() {
-				let entity::Update_Result { new_entities } = entity.update(tf);
+				let entity::Update_Result { new_entities, change_scene } = entity.update(tf);
+				
 				for new_entity in new_entities {
 					all_new_entities[new_entity.get_collision_id()].push(new_entity);
+				}
+				
+				if change_scene.is_some() {
+					new_scene = change_scene
 				}
 			}
 		}
@@ -143,6 +110,10 @@ async fn main() {
 		
 		for (i, layer) in entities.iter_mut().enumerate() {
 			layer.append(&mut all_new_entities[i]);
+		}
+		
+		if let Some(scene) = new_scene {
+			entities = scene.init(&texs)
 		}
 		
 		next_frame().await

@@ -7,6 +7,7 @@ pub mod pew;
 use macroquad::prelude::*;
 use crate::collision;
 use crate::entity::circle::Circle;
+use crate::scene::Scene;
 
 
 pub type Textures = Vec<Texture2D>;
@@ -39,13 +40,15 @@ pub trait Entity {
 }
 
 pub struct Update_Result {
-	pub new_entities: Vec<Box<dyn Entity>>
+	pub new_entities: Vec<Box<dyn Entity>>,
+	pub change_scene: Option<Box<dyn Scene>>
 }
 
 impl Default for Update_Result {
 	fn default() -> Self {
 		Update_Result {
-			new_entities: vec![]
+			new_entities: vec![],
+			change_scene: None
 		}
 	}
 }

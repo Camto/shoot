@@ -7,6 +7,7 @@ use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::entity::pew;
 use crate::entity::pew::Pew;
+use crate::scene::lose::Lose;
 
 
 const hp_max: usize = 4;
@@ -39,6 +40,13 @@ impl Player {
 
 impl Entity for Player {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
+		if self.hp <= 0 {
+			return entity::Update_Result {
+				change_scene: Some(Box::new(Lose {})),
+				..Default::default()
+			}
+		}
+		
 		let curr_speed: f32 =
 			speed *
 				if is_key_down(KeyCode::LeftShift) || is_key_down(KeyCode::RightShift) {
@@ -94,7 +102,8 @@ impl Entity for Player {
 						xv: bullet_speed,
 						..Default::default()
 					}))
-				]
+				],
+				..Default::default()
 			}
 		} else {
 			Default::default()
@@ -112,7 +121,7 @@ impl Entity for Player {
 			Some(tex), WHITE
 		);
 		
-		if self.hp < hp_max {
+		if self.hp > 0 && self.hp < hp_max {
 			let dmg_tex: &Texture2D = &texs[dmg_tex_ids[hp_max - self.hp - 1]];
 			draw_cube(
 				vec3(self.body.x, self.body.y, -1.0),
@@ -123,13 +132,9 @@ impl Entity for Player {
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {
-		if collision_id == collision::enemy_id {
+		if collision_id == collision::enemy_id && self.hp > 0 {
 			self.hp -= 1;
 		}
-	}
-	
-	fn is_dead(&self) -> bool {
-		self.hp <= 0
 	}
 	
 	fn get_collision_id(&self) -> usize {
