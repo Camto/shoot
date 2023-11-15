@@ -12,7 +12,7 @@ const player_speed: f32 = 400.0;
 
 pub struct Player {
 	pub tex_id: usize,
-	pub dmg_tex_ids: [usize; 3],
+	pub dmg_tex_ids: [usize; hp_max - 1],
 	pub body: Circle,
 	hp: usize,
 	was_killed: bool

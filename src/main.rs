@@ -30,10 +30,10 @@ async fn main() {
 		
 		"images/player.png",
 		"images/player_damage_1.png", "images/player_damage_2.png", "images/player_damage_3.png",
-		"images/player_bullet.png",
+		"images/player_bullet_1.png", "images/player_bullet_2.png",
 		
 		"images/guy.png",
-		"images/guy_bullet.png"
+		"images/guy_bullet_1.png", "images/guy_bullet_2.png"
 	] {
 		texs.push(load_texture(s).await.unwrap());
 	}
@@ -115,7 +115,9 @@ async fn main() {
 		
 		for (i, layer) in entities.iter_mut().enumerate() {
 			for &(j, collided_id) in collisions[i].iter() {
-				layer[j].collided_with(collided_id);
+				if !layer[j].is_dead() {
+					layer[j].collided_with(collided_id);
+				}
 			}
 		}
 		
