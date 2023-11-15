@@ -61,7 +61,7 @@ async fn main() {
 		}
 		
 		let mut num_of_coll_calcs = 0;
-		let mut collisions: [Vec<(usize, usize)>; collision::number_of_layers] = [vec![], vec![], vec![], vec![]];
+		let mut collisions: [Vec<(usize, usize)>; collision::number_of_layers] = [vec![], vec![], vec![], vec![], vec![]];
 		for (layer_id, layer) in entities.iter().enumerate() {
 			for (entity_idx, entity) in layer.iter().enumerate() {
 				for &check_layer in entity.checks_collision_with() {

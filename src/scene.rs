@@ -14,7 +14,7 @@ pub type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
 #[allow(unused_variables)]
 pub trait Scene {
 	fn init(&self, texs: &entity::Textures) -> Entities {
-		[vec![], vec![], vec![], vec![]]
+		[vec![], vec![], vec![], vec![], vec![]]
 	}
 }
 

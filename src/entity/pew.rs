@@ -96,9 +96,9 @@ impl Entity for Pew {
 	
 	fn get_collision_id(&self) -> usize {
 		if self.is_friendly {
-			collision::bullet_id
+			collision::player_bullet_id
 		} else {
-			collision::enemy_id
+			collision::enemy_bullet_id
 		}
 	}
 	

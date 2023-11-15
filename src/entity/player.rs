@@ -132,7 +132,7 @@ impl Entity for Player {
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {
-		if collision_id == collision::enemy_id && self.hp > 0 {
+		if collision_id == collision::enemy_bullet_id && self.hp > 0 {
 			self.hp -= 1;
 		}
 	}
@@ -142,7 +142,7 @@ impl Entity for Player {
 	}
 	
 	fn checks_collision_with(&self) -> &'static [usize] {
-		collision::with_enemies
+		collision::with_enemy_bullets
 	}
 	
 	fn get_hitbox(&self) -> Circle {

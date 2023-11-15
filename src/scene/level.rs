@@ -17,6 +17,16 @@ pub struct Level {}
 impl Scene for Level {
 	fn init(&self, texs: &entity::Textures) -> scene::Entities {
 		let mut entities: scene::Entities = [
+			vec![],
+			vec![
+				Box::new(Player::new(player::Player_Options {
+					body: Circle {
+						x: 200.0, y: 300.0,
+						r: 30.0
+					}
+				}))
+			],
+			vec![],
 			vec![
 				Box::new(Guy::new(guy::Guy_Options {
 					body: Circle {
@@ -33,15 +43,6 @@ impl Scene for Level {
 					..Default::default()
 				}))
 			],
-			vec![
-				Box::new(Player::new(player::Player_Options {
-					body: Circle {
-						x: 200.0, y: 300.0,
-						r: 30.0
-					}
-				}))
-			],
-			vec![],
 			vec![]
 		];
 		background::add(&mut entities, scroll_speed, &texs);
