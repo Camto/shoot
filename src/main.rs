@@ -23,9 +23,19 @@ const scroll_speed: f32 = 150.0;
 
 #[macroquad::main("Shoot")]
 async fn main() {
-	let texs: entity::Textures = vec![
-		load_texture("images/space.png").await.unwrap()
-	];
+	let mut texs: entity::Textures = vec![];
+	for s in [
+		"images/space.png",
+		
+		"images/player.png",
+		"images/player_damage_1.png", "images/player_damage_2.png", "images/player_damage_3.png",
+		"images/player_bullet.png",
+		
+		"images/guy.png",
+		"images/guy_bullet.png"
+	] {
+		texs.push(load_texture(s).await.unwrap());
+	}
 	
 	request_new_screen_size(window::width, window::height);
 	next_frame().await;
@@ -53,9 +63,10 @@ async fn main() {
 		],
 		vec![
 			Box::new(Player {
+				tex_id: 1,
 				body: Circle {
 					x: 200.0, y: 300.0,
-					r: 15.0
+					r: 30.0
 				},
 				was_killed: false
 			})

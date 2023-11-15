@@ -10,6 +10,7 @@ use crate::entity::circle::Circle;
 const player_speed: f32 = 300.0;
 
 pub struct Player {
+	pub tex_id: usize,
 	pub body: Circle,
 	pub was_killed: bool
 }
@@ -50,8 +51,8 @@ impl Entity for Player {
 			self.body.y = window::height - self.body.r
 		}
 		
-		let cam_x_off = float_utils::lerp(self.body.x, self.body.r, window::width - self.body.r, -50.0, 50.0);
-		let cam_y_off = float_utils::lerp(self.body.y, self.body.r, window::height - self.body.r, -50.0, 50.0);
+		let cam_x_off = float_utils::lerp(self.body.x, self.body.r, window::width - self.body.r, -25.0, 25.0);
+		let cam_y_off = float_utils::lerp(self.body.y, self.body.r, window::height - self.body.r, -25.0, 25.0);
 		set_camera(&Camera3D {
 			position: vec3(window::width/2.0, window::height/2.0, -500.0),
 			target: vec3(window::width/2.0 + cam_x_off, window::height/2.0 + cam_y_off, 0.0),
@@ -63,7 +64,14 @@ impl Entity for Player {
 	}
 	
 	fn render(&self, texs: &entity::Textures) {
-		self.body.render(texs)
+		let tex: &Texture2D = &texs[self.tex_id];
+		
+		self.body.render(texs);
+		draw_cube(
+			vec3(self.body.x, self.body.y, -10.0),
+			vec3(tex.width(), tex.height(), 0.0),
+			Some(tex), WHITE
+		);
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {

@@ -24,8 +24,8 @@ impl Entity for Background {
 	fn render(&self, texs: &entity::Textures) {
 		let tex: &Texture2D = &texs[self.tex_id];
 		draw_cube(
-			vec3(window::width * 0.5 + self.offset, window::height * 0.5, 50.0),
-			vec3(tex.width(), tex.height(), 1.0),
+			vec3(window::width * 0.5 + self.offset, window::height * 0.5, 10.0),
+			vec3(tex.width(), tex.height(), 0.0),
 			Some(tex), WHITE
 		);
 	}
