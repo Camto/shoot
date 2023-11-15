@@ -4,8 +4,8 @@ use crate::float_utils;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
-use crate::entity::pew;
-use crate::entity::pew::Pew;
+use crate::entity::bullet;
+use crate::entity::bullet::Bullet;
 
 
 const hp_max: usize = 8;
@@ -15,7 +15,7 @@ const tex_id: usize = 7;
 
 const shoot_sfx_id: usize = 1;
 
-pub struct Guy {
+pub struct Enemy {
 	pub body: Circle,
 	hp: usize,
 	
@@ -34,16 +34,16 @@ pub struct Guy {
 	just_shot: bool
 }
 
-pub struct Guy_Options {
+pub struct Enemy_Options {
 	pub body: Circle,
 	pub path: Vec<(f32, f32)>,
 	pub shoot_cycle: f32,
 	pub shoot_timer: f32
 }
 
-impl Default for Guy_Options {
+impl Default for Enemy_Options {
 	fn default() -> Self {
-		Guy_Options {
+		Enemy_Options {
 			body: Circle { x: 100.0, y: 50.0, r: 30.0 },
 			path: vec![(100.0, 50.0)],
 			shoot_cycle: 2.5,
@@ -52,9 +52,9 @@ impl Default for Guy_Options {
 	}
 }
 
-impl Guy {
-	pub fn new(init: Guy_Options) -> Self {
-		Guy {
+impl Enemy {
+	pub fn new(init: Enemy_Options) -> Self {
+		Enemy {
 			started_path: false,
 			starting_x: init.body.x,
 			starting_y: init.body.y,
@@ -82,7 +82,7 @@ impl Guy {
 	}
 }
 
-impl Entity for Guy {
+impl Entity for Enemy {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		if self.started_path {
 			if self.path.len() > 1 {
@@ -118,16 +118,16 @@ impl Entity for Guy {
 				
 				entity::Update_Result {
 					new_entities: vec![
-						Box::new(Pew::new(pew::Pew_Options {
+						Box::new(Bullet::new(bullet::Bullet_Options {
 							body: Circle { x: self.body.x - 20.0, y: self.body.y - 20.0, r: 15.0 },
 							yv: -40.0,
 							..Default::default()
 						})),
-						Box::new(Pew::new(pew::Pew_Options {
+						Box::new(Bullet::new(bullet::Bullet_Options {
 							body: Circle { x: self.body.x - 30.0, y: self.body.y, r: 15.0 },
 							..Default::default()
 						})),
-						Box::new(Pew::new(pew::Pew_Options {
+						Box::new(Bullet::new(bullet::Bullet_Options {
 							body: Circle { x: self.body.x - 20.0, y: self.body.y + 20.0, r: 15.0 },
 							yv: 40.0,
 							..Default::default()

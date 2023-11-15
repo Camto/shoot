@@ -1,8 +1,8 @@
 pub mod circle;
 pub mod background;
 pub mod player;
-pub mod guy;
-pub mod pew;
+pub mod enemy;
+pub mod bullet;
 pub mod text;
 pub mod sound_once;
 pub mod game_starter;

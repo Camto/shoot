@@ -3,8 +3,8 @@ use crate::entity;
 use crate::entity::circle::Circle;
 use crate::entity::player;
 use crate::entity::player::Player;
-use crate::entity::guy;
-use crate::entity::guy::Guy;
+use crate::entity::enemy;
+use crate::entity::enemy::Enemy;
 use crate::entity::win_checker::Win_Checker;
 use crate::scene;
 use crate::scene::Scene;
@@ -31,7 +31,7 @@ impl Scene for Level {
 			],
 			vec![],
 			vec![
-				Box::new(Guy::new(guy::Guy_Options {
+				Box::new(Enemy::new(enemy::Enemy_Options {
 					body: Circle {
 						x: window::width + 100.0,
 						y: -100.0,
@@ -45,7 +45,7 @@ impl Scene for Level {
 					],
 					..Default::default()
 				})),
-				Box::new(Guy::new(guy::Guy_Options {
+				Box::new(Enemy::new(enemy::Enemy_Options {
 					body: Circle {
 						x: window::width + 100.0,
 						y: window::mid_height,

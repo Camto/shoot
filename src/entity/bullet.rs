@@ -11,7 +11,7 @@ const anim_len: usize = 2;
 const player_anim_texs: [usize; anim_len] = [5, 6];
 const enemy_anim_texs: [usize; anim_len] = [8, 9];
 
-pub struct Pew {
+pub struct Bullet {
 	pub is_friendly: bool,
 	pub body: Circle,
 	pub xv: f32, pub yv: f32,
@@ -22,15 +22,15 @@ pub struct Pew {
 	was_killed: bool
 }
 
-pub struct Pew_Options {
+pub struct Bullet_Options {
 	pub is_friendly: bool,
 	pub body: Circle,
 	pub xv: f32, pub yv: f32
 }
 
-impl Default for Pew_Options {
+impl Default for Bullet_Options {
 	fn default() -> Self {
-		Pew_Options {
+		Bullet_Options {
 			is_friendly: false,
 			body: Circle { x: 100.0, y: 50.0, r: 15.0 },
 			xv: -200.0, yv: 0.0
@@ -38,9 +38,9 @@ impl Default for Pew_Options {
 	}
 }
 
-impl Pew {
-	pub fn new(init: Pew_Options) -> Self {
-		Pew {
+impl Bullet {
+	pub fn new(init: Bullet_Options) -> Self {
+		Bullet {
 			is_friendly: init.is_friendly,
 			body: init.body,
 			xv: init.xv, yv: init.yv,
@@ -53,7 +53,7 @@ impl Pew {
 	}
 }
 
-impl Entity for Pew {
+impl Entity for Bullet {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		self.body.x += self.xv * tf;
 		self.body.y += self.yv * tf;
@@ -75,8 +75,6 @@ impl Entity for Pew {
 			if self.is_friendly { player_anim_texs }
 			else { enemy_anim_texs };
 		let tex: &Texture2D = &texs[anim_texs[self.anim_sprite]];
-		
-		//self.body.render(texs);
 		
 		draw_cube(
 			vec3(self.body.x, self.body.y, 0.0),

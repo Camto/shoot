@@ -5,8 +5,8 @@ use crate::float_utils;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
-use crate::entity::pew;
-use crate::entity::pew::Pew;
+use crate::entity::bullet;
+use crate::entity::bullet::Bullet;
 use crate::scene::lose::Lose;
 
 
@@ -106,7 +106,7 @@ impl Entity for Player {
 			
 			entity::Update_Result {
 				new_entities: vec![
-					Box::new(Pew::new(pew::Pew_Options {
+					Box::new(Bullet::new(bullet::Bullet_Options {
 						is_friendly: true,
 						body: Circle { x: self.body.x + 30.0, y: self.body.y, r: 15.0 },
 						xv: bullet_speed,
