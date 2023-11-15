@@ -119,8 +119,8 @@ impl Entity for Guy {
 		}
 	}
 	
-	fn render(&self) {
-		self.body.render();
+	fn render(&self, texs: &entity::Textures) {
+		self.body.render(texs);
 	}
 	
 	fn get_collision_id(&self) -> usize {

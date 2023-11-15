@@ -31,8 +31,8 @@ impl Entity for Pew {
 		}
 	}
 	
-	fn render(&self) {
-		self.body.render();
+	fn render(&self, texs: &entity::Textures) {
+		self.body.render(texs);
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {

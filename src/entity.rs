@@ -1,18 +1,22 @@
 pub mod circle;
+pub mod background;
 pub mod player;
 pub mod guy;
 pub mod pew;
 
+use macroquad::prelude::*;
 use crate::collision;
 use crate::entity::circle::Circle;
 
+
+pub type Textures = Vec<Texture2D>;
 
 pub trait Entity {
 	fn update(&mut self, _: f32) -> Update_Result {
 		Default::default()
 	}
 	
-	fn render(&self) {}
+	fn render(&self, texs: &Textures) {}
 	
 	#[allow(unused_variables)]
 	fn collided_with(&mut self, collision_id: usize) {}

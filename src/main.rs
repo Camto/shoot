@@ -10,6 +10,7 @@ pub mod entity;
 use macroquad::prelude::*;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
+use crate::entity::background::Background;
 use crate::entity::player::Player;
 use crate::entity::guy;
 use crate::entity::guy::Guy;
@@ -18,17 +19,23 @@ use crate::entity::pew::Pew;
 
 type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
 
-const space_size: f32 = 1024.0;
+const scroll_speed: f32 = 150.0;
 
 #[macroquad::main("Shoot")]
 async fn main() {
-	let space: Texture2D = load_texture("images/space.png").await.unwrap();
+	let texs: entity::Textures = vec![
+		load_texture("images/space.png").await.unwrap()
+	];
 	
 	request_new_screen_size(window::width, window::height);
 	next_frame().await;
 	
 	let mut entities: Entities = [
 		vec![
+			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: -texs[0].width(), scroll_speed }),
+			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 0.0, scroll_speed }),
+			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: texs[0].width(), scroll_speed }),
+			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 2.0 * texs[0].width(), scroll_speed }),
 			Box::new(Guy::new(guy::Guy_Options {
 				body: Circle {
 					x: window::width - 30.0,
@@ -117,11 +124,9 @@ async fn main() {
 		
 		clear_background(RED);
 		
-		draw_cube(vec3(window::width * 0.5, window::height * 0.5, 50.0), vec3(space_size, space_size, 1.0), Some(&space), WHITE);
-		
 		for layer in &entities {
 			for entity in layer {
-				entity.render();
+				entity.render(&texs);
 			}
 		}
 		

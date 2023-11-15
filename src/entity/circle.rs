@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 use crate::window;
 use crate::float_utils;
+use crate::entity;
 use crate::entity::Entity;
 
 
@@ -15,7 +16,7 @@ impl Entity for Circle {
 		*self
 	}
 	
-	fn render(&self) {
+	fn render(&self, texs: &entity::Textures) {
 		draw_circle(self.x, self.y, self.r, YELLOW);
 	}
 	

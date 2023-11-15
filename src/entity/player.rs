@@ -53,8 +53,8 @@ impl Entity for Player {
 		let cam_x_off = float_utils::lerp(self.body.x, self.body.r, window::width - self.body.r, -50.0, 50.0);
 		let cam_y_off = float_utils::lerp(self.body.y, self.body.r, window::height - self.body.r, -50.0, 50.0);
 		set_camera(&Camera3D {
-			position: vec3(window::width/2.0 - cam_x_off, window::height/2.0 - cam_y_off, -500.0),
-			target: vec3(window::width/2.0, window::height/2.0, 0.0),
+			position: vec3(window::width/2.0, window::height/2.0, -500.0),
+			target: vec3(window::width/2.0 + cam_x_off, window::height/2.0 + cam_y_off, 0.0),
 			up: vec3(0.0, -1.0, 0.0),
 			..Default::default()
 		});
@@ -62,8 +62,8 @@ impl Entity for Player {
 		Default::default()
 	}
 	
-	fn render(&self) {
-		self.body.render()
+	fn render(&self, texs: &entity::Textures) {
+		self.body.render(texs)
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {
