@@ -31,7 +31,7 @@ pub struct Guy {
 	
 	pub shoot_cycle: f32,
 	pub shoot_timer: f32,
-	shot: bool
+	just_shot: bool
 }
 
 pub struct Guy_Options {
@@ -77,7 +77,7 @@ impl Guy {
 			
 			shoot_cycle: init.shoot_cycle,
 			shoot_timer: init.shoot_timer,
-			shot: false
+			just_shot: false
 		}
 	}
 }
@@ -114,7 +114,7 @@ impl Entity for Guy {
 			self.shoot_timer += tf;
 			if self.shoot_timer >= self.shoot_cycle {
 				self.shoot_timer = 0.0;
-				self.shot = true;
+				self.just_shot = true;
 				
 				entity::Update_Result {
 					new_entities: vec![
@@ -136,7 +136,7 @@ impl Entity for Guy {
 					..Default::default()
 				}
 			} else {
-				self.shot = false;
+				self.just_shot = false;
 				Default::default()
 			}
 		} else {
@@ -165,7 +165,7 @@ impl Entity for Guy {
 			Some(tex), WHITE
 		);
 		
-		if self.shot {
+		if self.just_shot {
 			let shoot_sfx: &audio::Sound = &sounds[shoot_sfx_id];
 			audio::play_sound_once(&shoot_sfx);
 		}

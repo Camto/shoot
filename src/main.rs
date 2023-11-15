@@ -30,7 +30,11 @@ async fn main() {
 	}
 	
 	let mut sounds: entity::Sounds = vec![];
-	for s in ["assets/player_shoot.ogg", "assets/enemy_shoot.ogg"] {
+	for s in [
+		"assets/player_shoot.ogg", "assets/enemy_shoot.ogg",
+		"assets/damage.ogg",
+		"assets/win.ogg", "assets/lose.ogg"
+	] {
 		sounds.push(audio::load_sound(s).await.unwrap());
 	}
 	

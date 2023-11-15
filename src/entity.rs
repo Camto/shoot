@@ -4,6 +4,7 @@ pub mod player;
 pub mod guy;
 pub mod pew;
 pub mod text;
+pub mod sound_once;
 pub mod game_starter;
 pub mod win_checker;
 

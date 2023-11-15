@@ -16,15 +16,17 @@ const bullet_speed: f32 = 800.0;
 const shoot_cycle: f32 = 0.5;
 
 const tex_id: usize = 1;
-const dmg_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
+const damage_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
 
 const shoot_sfx_id: usize = 0;
+const damage_sfx_id: usize = 2;
 
 pub struct Player {
 	pub body: Circle,
 	hp: usize,
+	just_damaged: bool,
 	shoot_timer: f32,
-	shot: bool
+	just_shot: bool
 }
 
 pub struct Player_Options {
@@ -36,14 +38,17 @@ impl Player {
 		Player {
 			body: init.body,
 			hp: hp_max,
+			just_damaged: false,
 			shoot_timer: 0.0,
-			shot: false
+			just_shot: false
 		}
 	}
 }
 
 impl Entity for Player {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
+		self.just_damaged = false;
+		
 		if self.hp <= 0 {
 			return entity::Update_Result {
 				change_scene: Some(Box::new(Lose {})),
@@ -97,7 +102,7 @@ impl Entity for Player {
 		self.shoot_timer += tf;
 		if self.shoot_timer >= shoot_cycle {
 			self.shoot_timer = 0.0;
-			self.shot = true;
+			self.just_shot = true;
 			
 			entity::Update_Result {
 				new_entities: vec![
@@ -111,7 +116,7 @@ impl Entity for Player {
 				..Default::default()
 			}
 		} else {
-			self.shot = false;
+			self.just_shot = false;
 			Default::default()
 		}
 	}
@@ -125,7 +130,7 @@ impl Entity for Player {
 		);
 		
 		if self.hp > 0 && self.hp < hp_max {
-			let dmg_tex: &Texture2D = &texs[dmg_tex_ids[hp_max - self.hp - 1]];
+			let dmg_tex: &Texture2D = &texs[damage_tex_ids[hp_max - self.hp - 1]];
 			draw_cube(
 				vec3(self.body.x, self.body.y, -1.0),
 				vec3(dmg_tex.width(), dmg_tex.height(), 0.0),
@@ -133,15 +138,21 @@ impl Entity for Player {
 			);
 		}
 		
-		if self.shot {
+		if self.just_shot {
 			let shoot_sfx: &audio::Sound = &sounds[shoot_sfx_id];
 			audio::play_sound_once(&shoot_sfx);
+		}
+		
+		if self.just_damaged {
+			let damage_sfx: &audio::Sound = &sounds[damage_sfx_id];
+			audio::play_sound_once(&damage_sfx);
 		}
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {
 		if collision_id == collision::enemy_bullet_id && self.hp > 0 {
 			self.hp -= 1;
+			self.just_damaged = true;
 		}
 	}
 	
