@@ -26,7 +26,7 @@ pub trait Entity {
 	fn get_collision_id(&self) -> usize { 0 }
 	
 	fn checks_collision_with(&self) -> &'static [usize] {
-		collision::no_coll_checks
+		collision::no_checks
 	}
 	
 	fn get_hitbox(&self) -> Circle {

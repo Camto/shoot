@@ -4,13 +4,15 @@ use crate::float_utils;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
-use crate::Pew;
+use crate::entity::pew;
+use crate::entity::pew::Pew;
 
 
-const guy_speed: f32 = 150.0;
+const speed: f32 = 150.0;
+
+const tex_id: usize = 7;
 
 pub struct Guy {
-	pub tex_id: usize,
 	pub body: Circle,
 	
 	pub path: Vec<(f32, f32)>,
@@ -28,11 +30,21 @@ pub struct Guy {
 }
 
 pub struct Guy_Options {
-	pub tex_id: usize,
 	pub body: Circle,
 	pub path: Vec<(f32, f32)>,
 	pub shoot_cycle: f32,
 	pub shoot_timer: f32
+}
+
+impl Default for Guy_Options {
+	fn default() -> Self {
+		Guy_Options {
+			body: Circle { x: 100.0, y: 50.0, r: 30.0 },
+			path: vec![(100.0, 50.0)],
+			shoot_cycle: 2.5,
+			shoot_timer: 2.0
+		}
+	}
 }
 
 impl Guy {
@@ -42,7 +54,6 @@ impl Guy {
 			starting_x: init.body.x,
 			starting_y: init.body.y,
 			
-			tex_id: init.tex_id,
 			body: init.body,
 			
 			dists:
@@ -64,25 +75,13 @@ impl Guy {
 	}
 }
 
-impl Default for Guy_Options {
-	fn default() -> Self {
-		Guy_Options {
-			tex_id: 0,
-			body: Circle { x: 100.0, y: 50.0, r: 30.0 },
-			path: vec![(100.0, 50.0)],
-			shoot_cycle: 2.5,
-			shoot_timer: 2.0
-		}
-	}
-}
-
 impl Entity for Guy {
 	fn update(&mut self, tf: f32) -> entity::Update_Result {
 		if self.started_path {
 			if self.path.len() > 1 {
 				let dist = self.dists[self.path_idx - if self.frw_through_path { 0 } else { 1 }];
 				
-				self.move_timer += guy_speed * tf;
+				self.move_timer += speed * tf;
 				if self.move_timer > dist {
 					self.move_timer -= dist;
 					if self.frw_through_path {
@@ -111,20 +110,20 @@ impl Entity for Guy {
 				
 				entity::Update_Result {
 					new_entities: vec![
-						Box::new(Pew {
-							body: Circle { x: self.body.x - 20.0, y: self.body.y - 20.0, r: 10.0 },
+						Box::new(Pew::new(pew::Pew_Options {
+							body: Circle { x: self.body.x - 20.0, y: self.body.y - 20.0, r: 15.0 },
 							yv: -40.0,
 							..Default::default()
-						}),
-						Box::new(Pew {
-							body: Circle { x: self.body.x - 30.0, y: self.body.y, r: 10.0 },
+						})),
+						Box::new(Pew::new(pew::Pew_Options {
+							body: Circle { x: self.body.x - 30.0, y: self.body.y, r: 15.0 },
 							..Default::default()
-						}),
-						Box::new(Pew {
-							body: Circle { x: self.body.x - 20.0, y: self.body.y + 20.0, r: 10.0 },
+						})),
+						Box::new(Pew::new(pew::Pew_Options {
+							body: Circle { x: self.body.x - 20.0, y: self.body.y + 20.0, r: 15.0 },
 							yv: 40.0,
 							..Default::default()
-						})
+						}))
 					]
 				}
 			} else {
@@ -134,7 +133,7 @@ impl Entity for Guy {
 			let (tx, ty) = self.path[0];
 			let dist = float_utils::dist(self.starting_x, self.starting_y, tx, ty);
 			
-			self.move_timer += 2.0 * guy_speed * tf;
+			self.move_timer += 2.0 * speed * tf;
 			if self.move_timer > dist {
 				self.move_timer = 0.0;
 				self.started_path = true;
@@ -149,7 +148,7 @@ impl Entity for Guy {
 	}
 	
 	fn render(&self, texs: &entity::Textures) {
-		let tex: &Texture2D = &texs[self.tex_id];
+		let tex: &Texture2D = &texs[tex_id];
 		
 		//self.body.render(texs);
 		
@@ -161,7 +160,7 @@ impl Entity for Guy {
 	}
 	
 	fn get_collision_id(&self) -> usize {
-		collision::generic_coll_id
+		collision::generic_id
 	}
 	
 	fn get_hitbox(&self) -> Circle {

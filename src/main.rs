@@ -15,7 +15,6 @@ use crate::entity::player;
 use crate::entity::player::Player;
 use crate::entity::guy;
 use crate::entity::guy::Guy;
-use crate::entity::pew::Pew;
 
 
 type Entities = [Vec<Box<dyn Entity>>; collision::number_of_layers];
@@ -48,7 +47,6 @@ async fn main() {
 			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: texs[0].width(), scroll_speed }),
 			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 2.0 * texs[0].width(), scroll_speed }),
 			Box::new(Guy::new(guy::Guy_Options {
-				tex_id: 7,
 				body: Circle {
 					x: window::width - 30.0,
 					y: window::height - 30.0,
@@ -65,8 +63,6 @@ async fn main() {
 		],
 		vec![
 			Box::new(Player::new(player::Player_Options {
-				tex_id: 1,
-				dmg_tex_ids: [2, 3, 4],
 				body: Circle {
 					x: 200.0, y: 300.0,
 					r: 30.0
