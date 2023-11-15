@@ -11,7 +11,7 @@ use crate::entity::pew::Pew;
 
 const hp_max: usize = 4;
 const speed: f32 = 400.0;
-const bullet_speed: f32 = 600.0;
+const bullet_speed: f32 = 800.0;
 const shoot_cycle: f32 = 0.5;
 
 const tex_id: usize = 1;
@@ -20,8 +20,7 @@ const dmg_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
 pub struct Player {
 	pub body: Circle,
 	hp: usize,
-	shoot_timer: f32,
-	was_killed: bool
+	shoot_timer: f32
 }
 
 pub struct Player_Options {
@@ -33,8 +32,7 @@ impl Player {
 		Player {
 			body: init.body,
 			hp: hp_max,
-			shoot_timer: 0.0,
-			was_killed: false
+			shoot_timer: 0.0
 		}
 	}
 }
@@ -127,14 +125,11 @@ impl Entity for Player {
 	fn collided_with(&mut self, collision_id: usize) {
 		if collision_id == collision::enemy_id {
 			self.hp -= 1;
-			if self.hp <= 0 {
-				self.was_killed = true;
-			}
 		}
 	}
 	
 	fn is_dead(&self) -> bool {
-		self.was_killed
+		self.hp <= 0
 	}
 	
 	fn get_collision_id(&self) -> usize {

@@ -8,12 +8,14 @@ use crate::entity::pew;
 use crate::entity::pew::Pew;
 
 
+const hp_max: usize = 8;
 const speed: f32 = 150.0;
 
 const tex_id: usize = 7;
 
 pub struct Guy {
 	pub body: Circle,
+	hp: usize,
 	
 	pub path: Vec<(f32, f32)>,
 	dists: Vec<f32>,
@@ -55,6 +57,7 @@ impl Guy {
 			starting_y: init.body.y,
 			
 			body: init.body,
+			hp: hp_max,
 			
 			dists:
 				init.path.windows(2)
@@ -70,7 +73,7 @@ impl Guy {
 			move_timer: 0.0,
 			
 			shoot_cycle: init.shoot_cycle,
-			shoot_timer: 0.0
+			shoot_timer: init.shoot_timer
 		}
 	}
 }
@@ -159,8 +162,22 @@ impl Entity for Guy {
 		);
 	}
 	
+	fn collided_with(&mut self, collision_id: usize) {
+		if collision_id == collision::bullet_id {
+			self.hp -= 1;
+		}
+	}
+	
+	fn is_dead(&self) -> bool {
+		self.hp <= 0
+	}
+	
 	fn get_collision_id(&self) -> usize {
 		collision::generic_id
+	}
+	
+	fn checks_collision_with(&self) -> &'static [usize] {
+		collision::with_bullets
 	}
 	
 	fn get_hitbox(&self) -> Circle {
