@@ -7,7 +7,7 @@ use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
-const player_speed: f32 = 300.0;
+const player_speed: f32 = 400.0;
 
 pub struct Player {
 	pub tex_id: usize,
