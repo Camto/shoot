@@ -16,7 +16,7 @@ impl Entity for Circle {
 		*self
 	}
 	
-	fn render(&self, texs: &entity::Textures) {
+	fn render(&self, _: &entity::Textures) {
 		draw_circle(self.x, self.y, self.r, YELLOW);
 	}
 	

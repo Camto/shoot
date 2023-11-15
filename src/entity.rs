@@ -11,14 +11,14 @@ use crate::entity::circle::Circle;
 
 pub type Textures = Vec<Texture2D>;
 
+#[allow(unused_variables)]
 pub trait Entity {
-	fn update(&mut self, _: f32) -> Update_Result {
+	fn update(&mut self, tf: f32) -> Update_Result {
 		Default::default()
 	}
 	
 	fn render(&self, texs: &Textures) {}
 	
-	#[allow(unused_variables)]
 	fn collided_with(&mut self, collision_id: usize) {}
 	
 	fn is_dead(&self) -> bool { false }

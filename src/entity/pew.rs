@@ -8,9 +8,11 @@ use crate::entity::circle::Circle;
 const frame_len: f32 = 0.5;
 const anim_len: usize = 2;
 
-const anim_texs: [usize; anim_len] = [8, 9];
+const player_anim_texs: [usize; anim_len] = [5, 6];
+const enemy_anim_texs: [usize; anim_len] = [8, 9];
 
 pub struct Pew {
+	pub is_friendly: bool,
 	pub body: Circle,
 	pub xv: f32, pub yv: f32,
 	
@@ -21,6 +23,7 @@ pub struct Pew {
 }
 
 pub struct Pew_Options {
+	pub is_friendly: bool,
 	pub body: Circle,
 	pub xv: f32, pub yv: f32
 }
@@ -28,6 +31,7 @@ pub struct Pew_Options {
 impl Default for Pew_Options {
 	fn default() -> Self {
 		Pew_Options {
+			is_friendly: false,
 			body: Circle { x: 100.0, y: 50.0, r: 15.0 },
 			xv: -200.0, yv: 0.0
 		}
@@ -37,6 +41,7 @@ impl Default for Pew_Options {
 impl Pew {
 	pub fn new(init: Pew_Options) -> Self {
 		Pew {
+			is_friendly: init.is_friendly,
 			body: init.body,
 			xv: init.xv, yv: init.yv,
 			
@@ -66,6 +71,9 @@ impl Entity for Pew {
 	}
 	
 	fn render(&self, texs: &entity::Textures) {
+		let anim_texs: [usize; anim_len] =
+			if self.is_friendly { player_anim_texs }
+			else { enemy_anim_texs };
 		let tex: &Texture2D = &texs[anim_texs[self.anim_sprite]];
 		
 		//self.body.render(texs);
@@ -77,10 +85,9 @@ impl Entity for Pew {
 		);
 	}
 	
-	fn collided_with(&mut self, collision_id: usize) {
-		if collision_id == collision::player_id {
-			self.was_killed = true;
-		}
+	// Killed if it collides with anything that was checking for it.
+	fn collided_with(&mut self, _: usize) {
+		self.was_killed = true;
 	}
 	
 	fn is_dead(&self) -> bool {
@@ -88,7 +95,11 @@ impl Entity for Pew {
 	}
 	
 	fn get_collision_id(&self) -> usize {
-		collision::enemy_id
+		if self.is_friendly {
+			collision::bullet_id
+		} else {
+			collision::enemy_id
+		}
 	}
 	
 	fn get_hitbox(&self) -> Circle {

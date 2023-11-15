@@ -5,10 +5,14 @@ use crate::float_utils;
 use crate::entity;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
+use crate::entity::pew;
+use crate::entity::pew::Pew;
 
 
 const hp_max: usize = 4;
 const speed: f32 = 400.0;
+const bullet_speed: f32 = 600.0;
+const shoot_cycle: f32 = 0.5;
 
 const tex_id: usize = 1;
 const dmg_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
@@ -16,6 +20,7 @@ const dmg_tex_ids: [usize; hp_max - 1] = [2, 3, 4];
 pub struct Player {
 	pub body: Circle,
 	hp: usize,
+	shoot_timer: f32,
 	was_killed: bool
 }
 
@@ -28,6 +33,7 @@ impl Player {
 		Player {
 			body: init.body,
 			hp: hp_max,
+			shoot_timer: 0.0,
 			was_killed: false
 		}
 	}
@@ -78,7 +84,23 @@ impl Entity for Player {
 			..Default::default()
 		});
 		
-		Default::default()
+		self.shoot_timer += tf;
+		if self.shoot_timer >= shoot_cycle {
+			self.shoot_timer = 0.0;
+			
+			entity::Update_Result {
+				new_entities: vec![
+					Box::new(Pew::new(pew::Pew_Options {
+						is_friendly: true,
+						body: Circle { x: self.body.x + 30.0, y: self.body.y, r: 15.0 },
+						xv: bullet_speed,
+						..Default::default()
+					}))
+				]
+			}
+		} else {
+			Default::default()
+		}
 	}
 	
 	fn render(&self, texs: &entity::Textures) {
