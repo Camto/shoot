@@ -10,6 +10,7 @@ use crate::Pew;
 const guy_speed: f32 = 150.0;
 
 pub struct Guy {
+	pub tex_id: usize,
 	pub body: Circle,
 	
 	pub path: Vec<(f32, f32)>,
@@ -27,6 +28,7 @@ pub struct Guy {
 }
 
 pub struct Guy_Options {
+	pub tex_id: usize,
 	pub body: Circle,
 	pub path: Vec<(f32, f32)>,
 	pub shoot_cycle: f32,
@@ -40,6 +42,7 @@ impl Guy {
 			starting_x: init.body.x,
 			starting_y: init.body.y,
 			
+			tex_id: init.tex_id,
 			body: init.body,
 			
 			dists:
@@ -64,6 +67,7 @@ impl Guy {
 impl Default for Guy_Options {
 	fn default() -> Self {
 		Guy_Options {
+			tex_id: 0,
 			body: Circle { x: 100.0, y: 50.0, r: 30.0 },
 			path: vec![(100.0, 50.0)],
 			shoot_cycle: 2.5,
@@ -108,16 +112,16 @@ impl Entity for Guy {
 				entity::Update_Result {
 					new_entities: vec![
 						Box::new(Pew {
-							body: Circle { x: self.body.x, y: self.body.y - 20.0, r: 10.0 },
+							body: Circle { x: self.body.x - 20.0, y: self.body.y - 20.0, r: 10.0 },
 							yv: -40.0,
 							..Default::default()
 						}),
 						Box::new(Pew {
-							body: Circle { x: self.body.x, y: self.body.y, r: 10.0 },
+							body: Circle { x: self.body.x - 30.0, y: self.body.y, r: 10.0 },
 							..Default::default()
 						}),
 						Box::new(Pew {
-							body: Circle { x: self.body.x, y: self.body.y + 20.0, r: 10.0 },
+							body: Circle { x: self.body.x - 20.0, y: self.body.y + 20.0, r: 10.0 },
 							yv: 40.0,
 							..Default::default()
 						})
@@ -145,7 +149,15 @@ impl Entity for Guy {
 	}
 	
 	fn render(&self, texs: &entity::Textures) {
-		self.body.render(texs);
+		let tex: &Texture2D = &texs[self.tex_id];
+		
+		//self.body.render(texs);
+		
+		draw_cube(
+			vec3(self.body.x, self.body.y, 0.0),
+			vec3(tex.width(), tex.height(), 0.0),
+			Some(tex), WHITE
+		);
 	}
 	
 	fn get_collision_id(&self) -> usize {

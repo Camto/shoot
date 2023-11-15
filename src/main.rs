@@ -48,6 +48,7 @@ async fn main() {
 			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: texs[0].width(), scroll_speed }),
 			Box::new(Background { tex_id: 0, tex_width: texs[0].width(), offset: 2.0 * texs[0].width(), scroll_speed }),
 			Box::new(Guy::new(guy::Guy_Options {
+				tex_id: 7,
 				body: Circle {
 					x: window::width - 30.0,
 					y: window::height - 30.0,
