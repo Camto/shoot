@@ -1,5 +1,5 @@
 pub mod background;
-//pub mod intro;
+pub mod start;
 pub mod level;
 pub mod win;
 pub mod lose;

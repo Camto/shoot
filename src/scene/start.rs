@@ -8,9 +8,9 @@ use crate::scene::Scene;
 use crate::scene::background;
 
 
-pub struct Lose {}
+pub struct Start {}
 
-impl Scene for Lose {
+impl Scene for Start {
 	fn init(&self, texs: &entity::Textures) -> scene::Entities {
 		set_default_camera();
 		
@@ -21,13 +21,13 @@ impl Scene for Lose {
 			// In this layer because Z issues I will not properly fix.
 			vec![
 				Box::new(Text {
-					x: window::mid_width, y: window::mid_height - 40.0,
-					text: "You lose!".to_string(),
-					font_size: 40
+					x: window::mid_width, y: window::mid_height - 60.0,
+					text: "Shoot, the Game".to_string(),
+					font_size: 60
 				}),
 				Box::new(Text {
 					x: window::mid_width, y: window::mid_height + 40.0,
-					text: "Press enter to restart".to_string(),
+					text: "Press enter to start".to_string(),
 					font_size: 40
 				})
 			],

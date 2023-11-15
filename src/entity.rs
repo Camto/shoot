@@ -4,6 +4,7 @@ pub mod player;
 pub mod guy;
 pub mod pew;
 pub mod text;
+pub mod game_starter;
 pub mod win_checker;
 
 use macroquad::{audio, prelude::*};

@@ -10,7 +10,7 @@ pub mod scene;
 
 use macroquad::prelude::*;
 use crate::scene::Scene;
-use crate::scene::level::Level;
+use crate::scene::start::Start;
 
 
 #[macroquad::main("Shoot")]
@@ -36,7 +36,7 @@ async fn main() {
 	request_new_screen_size(window::width, window::height);
 	next_frame().await;
 	
-	let mut entities: scene::Entities = (Level {}).init(&texs);
+	let mut entities: scene::Entities = (Start {}).init(&texs);
 	
 	loop {
 		set_camera(&Camera3D {
