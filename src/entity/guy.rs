@@ -151,7 +151,7 @@ impl Entity for Guy {
 		}
 	}
 	
-	fn render(&self, texs: &entity::Textures) {
+	fn render(&self, texs: &entity::Textures, sounds: &entity::Sounds, _: &Font) {
 		let tex: &Texture2D = &texs[tex_id];
 		
 		//self.body.render(texs);

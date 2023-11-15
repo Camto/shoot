@@ -70,7 +70,7 @@ impl Entity for Pew {
 		Default::default()
 	}
 	
-	fn render(&self, texs: &entity::Textures) {
+	fn render(&self, texs: &entity::Textures, _: &entity::Sounds, _: &Font) {
 		let anim_texs: [usize; anim_len] =
 			if self.is_friendly { player_anim_texs }
 			else { enemy_anim_texs };

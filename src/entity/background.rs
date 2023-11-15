@@ -21,7 +21,7 @@ impl Entity for Background {
 		Default::default()
 	}
 	
-	fn render(&self, texs: &entity::Textures) {
+	fn render(&self, texs: &entity::Textures, _: &entity::Sounds, _: &Font) {
 		let tex: &Texture2D = &texs[self.tex_id];
 		draw_cube(
 			vec3(window::mid_width + self.offset, window::mid_height, 10.0),

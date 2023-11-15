@@ -17,17 +17,21 @@ use crate::scene::level::Level;
 async fn main() {
 	let mut texs: entity::Textures = vec![];
 	for s in [
-		"images/space.png",
+		"assets/space.png",
 		
-		"images/player.png",
-		"images/player_damage_1.png", "images/player_damage_2.png", "images/player_damage_3.png",
-		"images/player_bullet_1.png", "images/player_bullet_2.png",
+		"assets/player.png",
+		"assets/player_damage_1.png", "assets/player_damage_2.png", "assets/player_damage_3.png",
+		"assets/player_bullet_1.png", "assets/player_bullet_2.png",
 		
-		"images/guy.png",
-		"images/guy_bullet_1.png", "images/guy_bullet_2.png"
+		"assets/guy.png",
+		"assets/guy_bullet_1.png", "assets/guy_bullet_2.png"
 	] {
 		texs.push(load_texture(s).await.unwrap());
 	}
+	
+	let sounds: entity::Sounds = vec![];
+	
+	let kenvector_future: Font = load_ttf_font("assets/kenvector_future.ttf").await.unwrap();
 	
 	request_new_screen_size(window::width, window::height);
 	next_frame().await;
@@ -104,7 +108,7 @@ async fn main() {
 		
 		for layer in &entities {
 			for entity in layer {
-				entity.render(&texs);
+				entity.render(&texs, &sounds, &kenvector_future);
 			}
 		}
 		

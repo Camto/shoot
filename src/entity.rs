@@ -3,15 +3,17 @@ pub mod background;
 pub mod player;
 pub mod guy;
 pub mod pew;
+pub mod text;
 pub mod win_checker;
 
-use macroquad::prelude::*;
+use macroquad::{audio, prelude::*};
 use crate::collision;
 use crate::entity::circle::Circle;
 use crate::scene::Scene;
 
 
 pub type Textures = Vec<Texture2D>;
+pub type Sounds = Vec<audio::Sound>;
 
 #[allow(unused_variables)]
 pub trait Entity {
@@ -19,7 +21,7 @@ pub trait Entity {
 		Default::default()
 	}
 	
-	fn render(&self, texs: &Textures) {}
+	fn render(&self, texs: &Textures, sounds: &Sounds, font: &Font) {}
 	
 	fn collided_with(&mut self, collision_id: usize) {}
 	
