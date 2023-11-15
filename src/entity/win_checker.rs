@@ -8,7 +8,7 @@ use crate::scene::win::Win;
 
 
 const hitbox: Circle = Circle {
-	x: window::width * 0.5, y: window::height * 0.5,
+	x: window::mid_width, y: window::mid_height,
 	r: 5000.0
 };
 

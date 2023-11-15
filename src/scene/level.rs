@@ -33,8 +33,8 @@ impl Scene for Level {
 			vec![
 				Box::new(Guy::new(guy::Guy_Options {
 					body: Circle {
-						x: window::width - 30.0,
-						y: window::height - 30.0,
+						x: window::width + 100.0,
+						y: -100.0,
 						r: 30.0
 					},
 					path: vec![
@@ -42,6 +42,20 @@ impl Scene for Level {
 						(700.0, 200.0),
 						(800.0, 300.0),
 						(700.0, 400.0)
+					],
+					..Default::default()
+				})),
+				Box::new(Guy::new(guy::Guy_Options {
+					body: Circle {
+						x: window::width + 100.0,
+						y: window::mid_height,
+						r: 30.0
+					},
+					path: vec![
+						(650.0, 200.0),
+						(550.0, 300.0),
+						(650.0, 400.0),
+						(550.0, 500.0)
 					],
 					..Default::default()
 				}))
