@@ -11,6 +11,7 @@ use macroquad::prelude::*;
 use crate::entity::Entity;
 use crate::entity::circle::Circle;
 use crate::entity::background::Background;
+use crate::entity::player;
 use crate::entity::player::Player;
 use crate::entity::guy;
 use crate::entity::guy::Guy;
@@ -62,14 +63,14 @@ async fn main() {
 			}))
 		],
 		vec![
-			Box::new(Player {
+			Box::new(Player::new(player::Player_Options {
 				tex_id: 1,
+				dmg_tex_ids: [2, 3, 4],
 				body: Circle {
 					x: 200.0, y: 300.0,
 					r: 30.0
-				},
-				was_killed: false
-			})
+				}
+			}))
 		],
 		vec![],
 		vec![]

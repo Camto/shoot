@@ -7,12 +7,33 @@ use crate::entity::Entity;
 use crate::entity::circle::Circle;
 
 
+const hp_max: usize = 4;
 const player_speed: f32 = 400.0;
 
 pub struct Player {
 	pub tex_id: usize,
+	pub dmg_tex_ids: [usize; 3],
 	pub body: Circle,
-	pub was_killed: bool
+	hp: usize,
+	was_killed: bool
+}
+
+pub struct Player_Options {
+	pub tex_id: usize,
+	pub dmg_tex_ids: [usize; 3],
+	pub body: Circle
+}
+
+impl Player {
+	pub fn new(init: Player_Options) -> Self {
+		Player {
+			tex_id: init.tex_id,
+			dmg_tex_ids: init.dmg_tex_ids,
+			body: init.body,
+			hp: hp_max,
+			was_killed: false
+		}
+	}
 }
 
 impl Entity for Player {
@@ -66,17 +87,30 @@ impl Entity for Player {
 	fn render(&self, texs: &entity::Textures) {
 		let tex: &Texture2D = &texs[self.tex_id];
 		
-		self.body.render(texs);
+		//self.body.render(texs);
+		
 		draw_cube(
-			vec3(self.body.x, self.body.y, -10.0),
+			vec3(self.body.x, self.body.y, 0.0),
 			vec3(tex.width(), tex.height(), 0.0),
 			Some(tex), WHITE
 		);
+		
+		if self.hp < hp_max {
+			let dmg_tex: &Texture2D = &texs[self.dmg_tex_ids[hp_max - self.hp - 1]];
+			draw_cube(
+				vec3(self.body.x, self.body.y, -1.0),
+				vec3(dmg_tex.width(), dmg_tex.height(), 0.0),
+				Some(dmg_tex), WHITE
+			);
+		}
 	}
 	
 	fn collided_with(&mut self, collision_id: usize) {
 		if collision_id == collision::enemy_coll_id {
-			self.was_killed = true;
+			self.hp -= 1;
+			if self.hp <= 0 {
+				self.was_killed = true;
+			}
 		}
 	}
 	
